@@ -1,36 +1,34 @@
 pipeline {
-agent any
+    agent any
 
-```
-tools {
-    maven 'maven'
-    jdk 'jdk17'
-}
-
-stages {
-
-    stage('Checkout') {
-        steps {
-            git 'https://github.com/shreyash8010/javaapp1.git'
-        }
+    tools {
+        jdk 'jdk17'
+        maven 'maven'
     }
 
-    stage('Build') {
-        steps {
-            sh 'mvn clean package'
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/shreyash8010/javaapp1.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                rm -rf /var/www/html/*
+                cp -r target/ROOT/* /var/www/html/
+                sudo systemctl restart apache2
+                '''
+            }
         }
     }
-
-    stage('Deploy') {
-        steps {
-            sh '''
-            rm -rf /var/www/html/*
-            cp -r target/ROOT/* /var/www/html/
-            sudo systemctl restart apache2
-            '''
-        }
-    }
-}
-```
-
 }
