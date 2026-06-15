@@ -20,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                echo "Checking Tomcat webapps directory..."
-               sudo rm -rf /var/www/html/* 
+                rm -rf /var/www/html/* 
                cp -r target/ROOT/* /var/www/html/ 
                sudo systemctl restart apache2
                 '''
