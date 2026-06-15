@@ -1,35 +1,27 @@
 pipeline {
-agent any
+    agent any
 
-stages {
+    stages {
 
-    stage('Checkout') {
-        steps {
-            git branch: 'main',
-                url: 'https://github.com/shreyash8010/javaapp1.git'
+        stage('Clone') {
+            steps {
+                git 'https://github.com/shreyash8010/javaapp1.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                sh '''
+                pkill -f jar || true
+                nohup java -jar target/*.jar &
+                '''
+            }
         }
     }
-
-    stage('Build') {
-        steps {
-            sh '''
-            java -version
-            mvn -version
-            mvn clean package
-            '''
-        }
-    }
-
-    stage('Deploy') {
-        steps {
-            sh '''
-            rm -rf /var/www/html/*
-            cp -r target/ROOT/* /var/www/html/
-            sudo systemctl restart apache2
-            '''
-        }
-    }
-}
-
-
 }
